@@ -1,8 +1,8 @@
 import { Sequelize } from "sequelize";
 import {dbDetails} from "./server.config.js";  
 
-export const sequelize = new Sequelize("EMP_System", "root", dbDetails.password, {
-  host: "localhost",
+export const sequelize = new Sequelize(dbDetails.dbName, dbDetails.dbUser, dbDetails.dbPassword, {
+  host: dbDetails.dbHost,
   dialect: "mysql",
   logging: false,
 });
