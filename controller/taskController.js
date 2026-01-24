@@ -3,6 +3,7 @@ import { User } from "../model/User.js";
 import { TaskStatus } from "../model/TaskStatus.js";
 import { authorizationUtil } from "./util.js";
 import { sequelize } from "../config/dbConnect.config.js";
+import { getIO } from "../socket.js";
 
 /**
  * ADMIN → Create Task
@@ -12,20 +13,36 @@ export const createTask = async (req, res) => {
     const { title, description, due_date, assigned_to, category } = req.body;
     const { id, role } = req.user; // from JWT
 
-    if (role !== "admin") {
-      return res.status(403).json({ message: "Only admin can create tasks" });
-    }
+    authorizationUtil(["admin"], role);
+
 
     const task = await Task.create({
       title,
       description,
       created_by: id,
       assigned_to,
-      status_id: 1,
+      status_id: 1, // 1 = new
       due_date,
       category,
     });
 
+    const taskWithStatus = await Task.findByPk(task.id, {
+      include: [
+        {
+          model: TaskStatus,
+          as: "Status",
+          attributes: ["status_name"],
+        },
+        {
+          model: User,
+          as: "Creator",
+          attributes: ["username"],
+        },
+      ],
+    });
+
+    const io = getIO();
+    io.to(`user_${assigned_to}`).emit("newTaskAssigned", taskWithStatus.toJSON());
     res.status(201).json(task);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -39,15 +56,11 @@ export const getAllTasks = async (req, res) => {
   try {
     const { role } = req.user;
 
-    // if (role !== "admin") {
-    //   return res.status(403).json({ message: "Admin only" });
-    // }
 
     authorizationUtil(["admin"], role);
-    // 1. Fetch data using Sequelize Inclusions
 
     const employeesData = await User.findAll({
-      where: { role_id: 2 }, // Employees only
+      where: { role_id: 2 }, // 2 = employee
       attributes: ["id", "username", "email"],
       include: [
         {
@@ -70,16 +83,17 @@ export const getAllTasks = async (req, res) => {
       ],
     });
 
-    // 2. Transform the data into your specific JSON structure
-   const formattedResponse = employeesData.map((empInstance) => {
-      const emp = empInstance.get({ plain: true }); 
+    /* all task*/
+
+    const formattedResponse = employeesData.map((empInstance) => {
+      const emp = empInstance.get({ plain: true });
       // --- DEBUG LOG START ---
       // This will show you exactly what 'Status' looks like in your terminal
       // if (emp.AssignedTasks.length > 0) {
       //   console.log("Full Task Object:", JSON.stringify(emp.AssignedTasks[0], null, 2));
       // }
       // --- DEBUG LOG END ---
-      
+
       return {
         employee: {
           id: emp.id,
@@ -109,10 +123,6 @@ export const getAllTasks = async (req, res) => {
 export const employee = async (req, res) => {
   try {
     const { id, role } = req.user;
-
-    // if (role !== "employee") {
-    //   return res.status(403).json({ message: "Employee only" });
-    // }
 
     authorizationUtil(["employee"], role);
 
@@ -155,16 +165,11 @@ export const updateTaskStatus = async (req, res) => {
     const { task_id, status_id } = req.body;
     const { id, role } = req.user;
 
-    // if (role !== "employee") {
-    //   return res.status(403).json({ message: "Employee only" });
-    // }
-
-    
     authorizationUtil(["employee"], role);
-    
+
     const updated = await Task.update(
       { status_id },
-      { where: { id: task_id, assigned_to: id } }
+      { where: { id: task_id, assigned_to: id } },
     );
 
     if (updated[0] === 0) {
