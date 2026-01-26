@@ -13,6 +13,7 @@ This backend provides a RESTful API for managing employees, tasks, and roles in 
 - **node-cron**: Scheduled tasks
 - **cors**: Cross-origin resource sharing
 - **dotenv**: Environment variable management
+- **Socket.IO**: Real-time communication
 
 ## Project Structure
 
@@ -43,6 +44,7 @@ backend/
 │   └── userRoutes.js          # User management routes
 ├── .env                       # Environment variables
 ├── index.js                   # Main application entry point
+├── socket.js                  # Socket.IO configuration for real-time features
 ├── package.json               # Dependencies and scripts
 └── README.md                  # This file
 ```
@@ -108,6 +110,32 @@ The API uses JWT (JSON Web Tokens) for authentication. Include the token in the 
 ```
 Authorization: Bearer <token>
 ```
+
+## Real-Time Features
+
+The application uses Socket.IO for real-time communication between admin and employees for task management.
+
+### Socket Events
+
+**Client Events (Admin):**
+- `join`: Join a user's room (emitted on connection)
+  - Data: `{ userId }`
+- `assignTask`: Assign a new task to an employee
+  - Data: `{ employeeId, taskData }`
+- `updateTask`: Update an existing task
+  - Data: `{ employeeId, taskId, taskData }`
+- `deleteTask`: Delete a task
+  - Data: `{ employeeId, taskId }`
+
+**Server Events (Employee):**
+- `newTaskAssigned`: Notifies employee of a newly assigned task
+  - Data: `{ taskData }`
+- `taskUpdated`: Notifies employee of task updates
+  - Data: `{ taskId, taskData }`
+- `taskDeleted`: Notifies employee of task deletion
+  - Data: `{ taskId }`
+
+Employees join their personal room on connection using `join` event with their user ID.
 
 ## Scheduled Tasks
 
