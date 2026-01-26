@@ -4,17 +4,21 @@ import {
   createTask,
   getAllTasks,
   employee,
-  updateTaskStatus
+  updateTaskStatus,
+  deleteTask,
+  updateTask,
 } from "../controller/taskController.js";
 
 const router = express.Router();
 
 // ADMIN
-router.post("/create",  authMiddleware, createTask);
-router.get("/all",  authMiddleware, getAllTasks);
+router.post("/create", authMiddleware, createTask);
+router.get("/all", authMiddleware, getAllTasks);
+router.put("/update/:id", authMiddleware, updateTask);
+router.delete("/delete", authMiddleware, deleteTask);
 
 // EMPLOYEE
-router.get("/employee",  authMiddleware, employee);
-router.put("/status",  authMiddleware, updateTaskStatus);
+router.get("/employee", authMiddleware, employee);
+router.put("/status", authMiddleware, updateTaskStatus);
 
 export default router;

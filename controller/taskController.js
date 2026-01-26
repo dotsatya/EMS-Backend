@@ -2,19 +2,16 @@ import { Task } from "../model/Task.js";
 import { User } from "../model/User.js";
 import { TaskStatus } from "../model/TaskStatus.js";
 import { authorizationUtil } from "./util.js";
-import { sequelize } from "../config/dbConnect.config.js";
 import { getIO } from "../socket.js";
 
-/**
- * ADMIN → Create Task
- */
+// .........ADMIN.........
+//  Create Task
 export const createTask = async (req, res) => {
   try {
     const { title, description, due_date, assigned_to, category } = req.body;
     const { id, role } = req.user; // from JWT
 
     authorizationUtil(["admin"], role);
-
 
     const task = await Task.create({
       title,
@@ -42,20 +39,135 @@ export const createTask = async (req, res) => {
     });
 
     const io = getIO();
-    io.to(`user_${assigned_to}`).emit("newTaskAssigned", taskWithStatus.toJSON());
+    io.to(`user_${assigned_to}`).emit(
+      "newTaskAssigned",
+      taskWithStatus.toJSON(),
+    );
     res.status(201).json(task);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-/**
- * ADMIN → View all tasks
- */
+//  Update task
+export const updateTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, due_date, category } = req.body;
+    const { id: adminId, role } = req.user;
+
+    authorizationUtil(["admin"], role);
+
+    const task = await Task.findByPk(id, {
+      include: [
+        {
+          model: TaskStatus,
+          as: "Status",
+          attributes: ["status_name"],
+        },
+      ],
+    });
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    if (task.created_by !== adminId) {
+      return res
+        .status(403)
+        .json({ message: "You can only update tasks that you created" });
+    }
+
+    const taskStatus = task.Status?.status_name?.toLowerCase();
+    if (taskStatus !== "new" && taskStatus !== "active") {
+      return res.status(403).json({
+        message: "Cannot edit task. Only new and active tasks canbe edited.",
+      });
+    }
+
+    const updatedFields = {};
+    if (title) updatedFields.title = title;
+    if (description) updatedFields.description = description;
+    if (due_date) updatedFields.due_date = due_date;
+    if (category) updatedFields.category = category;
+
+    const updatedRows = await Task.update(updatedFields, {
+      where: { id: id },
+    });
+
+    if (updatedRows[0] === 0) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    const updatedTask = await Task.findByPk(id, {
+      include: [
+        {
+          model: TaskStatus,
+          as: "Status",
+          attributes: ["status_name"],
+        },
+        {
+          model: User,
+          as: "Creator",
+          attributes: ["username"],
+        },
+      ],
+    });
+
+    const io = getIO();
+    io.to(`user_${task.assigned_to}`).emit("taskUpdated", {
+      taskId: task.id,
+      taskData: updatedTask,
+    });
+
+    res
+      .status(200)
+      .json({ message: "Task updated successfully", task: updatedTask });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+//  Delete task/
+export const deleteTask = async (req, res) => {
+  try {
+    const { task_id } = req.body;
+    const { id, role } = req.user;
+
+    authorizationUtil(["admin"], role);
+
+    // Find the task to get the assigned employee ID
+    const task = await Task.findByPk(task_id);
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    // Check the current admin
+    if (task.created_by !== id) {
+      return res
+        .status(403)
+        .json({ message: "You can only delete tasks that you created" });
+    }
+
+    // Delete task
+    await Task.destroy({
+      where: { id: task_id },
+    });
+
+    // Emit socket event to notify the employee
+    const io = getIO();
+    io.to(`user_${task.assigned_to}`).emit("taskDeleted", { taskId: task_id });
+
+    res.status(200).json({ message: "Task deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+//  View all tasks
 export const getAllTasks = async (req, res) => {
   try {
     const { role } = req.user;
-
 
     authorizationUtil(["admin"], role);
 
@@ -66,7 +178,14 @@ export const getAllTasks = async (req, res) => {
         {
           model: Task,
           as: "AssignedTasks",
-          attributes: ["id", "title", "description", "status_id", "due_date"],
+          attributes: [
+            "id",
+            "category",
+            "title",
+            "description",
+            "status_id",
+            "due_date",
+          ],
           include: [
             {
               model: TaskStatus,
@@ -102,6 +221,7 @@ export const getAllTasks = async (req, res) => {
         },
         tasks: emp.AssignedTasks.map((task) => ({
           id: task.id,
+          category: task.category,
           title: task.title,
           description: task.description,
           due_date: task.due_date,
@@ -117,9 +237,8 @@ export const getAllTasks = async (req, res) => {
   }
 };
 
-/**
- * EMPLOYEE → View my tasks
- */
+// .........EMPLOYEE.........
+//  View employee & tasks
 export const employee = async (req, res) => {
   try {
     const { id, role } = req.user;
@@ -157,9 +276,7 @@ export const employee = async (req, res) => {
   }
 };
 
-/**
- * EMPLOYEE → Update task status
- */
+//  Update task status
 export const updateTaskStatus = async (req, res) => {
   try {
     const { task_id, status_id } = req.body;
@@ -175,10 +292,22 @@ export const updateTaskStatus = async (req, res) => {
     if (updated[0] === 0) {
       return res.status(404).json({ message: "Task not found" });
     }
+    const updatedTask = await Task.findByPk(task_id, {
+      include: [
+        { model: TaskStatus, as: "Status", attributes: ["status_name"] },
+        { model: User, as: "Creator", attributes: ["username"] },
+      ],
+    });
 
+    const task = await Task.findByPk(task_id);
+    const io = getIO();
+    io.to(`user_${task.created_by}`).emit("taskStatusUpdated", {
+      taskId: task_id,
+      statusId: status_id,
+    });
     res.json({ message: "Task status updated" });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
