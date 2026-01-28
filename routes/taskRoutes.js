@@ -7,6 +7,7 @@ import {
   updateTaskStatus,
   deleteTask,
   updateTask,
+  failedTask,
 } from "../controller/taskController.js";
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.post("/create", authMiddleware, createTask);
 router.get("/all", authMiddleware, getAllTasks);
 router.put("/update/:id", authMiddleware, updateTask);
 router.delete("/delete", authMiddleware, deleteTask);
+router.post("/failedTask", authMiddleware, failedTask);
 
 // EMPLOYEE
 router.get("/employee", authMiddleware, employee);

@@ -1,7 +1,7 @@
 import { Task } from "../model/Task.js";
 import { User } from "../model/User.js";
 import { TaskStatus } from "../model/TaskStatus.js";
-import { authorizationUtil } from "./util.js";
+import { authorizationUtil, updateFailedTasks } from "./util.js";
 import { getIO } from "../socket.js";
 
 // .........ADMIN.........
@@ -309,5 +309,16 @@ export const updateTaskStatus = async (req, res) => {
   } catch (err) {
     // console.log(err);
     res.status(500).json({ error: err.message });
+  }
+};
+
+//  Failed on due_date
+export const failedTask = async (req, res) => {
+  try {
+    await updateFailedTasks();
+    res.status(200).json({ message: "Failed tasks updated successfully" });
+  } catch (error) {
+    console.error("Error updating failed tasks:", error);
+    res.status(500).json({ message: "Error updating failed tasks", error: error.message });
   }
 };
