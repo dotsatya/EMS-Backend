@@ -2,6 +2,8 @@
 
 This backend provides a RESTful API for managing employees, tasks, and roles in an employee management system. It uses Node.js, Express, Sequelize ORM, and MySQL database.
 
+Check the Frontend repository: https://github.com/dotsatya/EMS-Frontend
+
 ## Technologies Used
 
 - **Node.js**: JavaScript runtime
